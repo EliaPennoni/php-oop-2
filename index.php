@@ -1,8 +1,28 @@
 <?php
-class Prodotto
+// creazione del trait
+trait Identificativo
 {
     public $id;
     public $nome;
+
+    public function __construct($id, $nome)
+    {
+        $this->id = $id;
+        $this->nome = $nome;
+    }
+}
+
+// Eccezione per il prezzo non valido
+class PrezzoNonValidoException extends Exception
+{
+    public function __construct($message = "Prezzo non valido!")
+    {
+        parent::__construct($message);
+    }
+}
+class Prodotto
+{
+    use Identificativo;
     public $prezzo;
     public $descrizione;
     public $categoria;
@@ -10,6 +30,9 @@ class Prodotto
 
     public function __construct($id, $nome, $prezzo, $descrizione, Categoria $categoria, TipoProdotto $tipoProdotto)
     {
+        if ($prezzo < 0) {
+            throw new PrezzoNonValidoException("Il prezzo del prodotto non può essere negativo.");
+        }
         $this->id = $id;
         $this->nome = $nome;
         $this->prezzo = $prezzo;
@@ -26,26 +49,12 @@ class Prodotto
 
 class Categoria
 {
-    public $id;
-    public $nome;
-
-    public function __construct($id, $nome)
-    {
-        $this->id = $id;
-        $this->nome = $nome;
-    }
+    use Identificativo;
 }
 
 class TipoProdotto
 {
-    public $id;
-    public $nome;
-
-    public function __construct($id, $nome)
-    {
-        $this->id = $id;
-        $this->nome = $nome;
-    }
+    use Identificativo;
 }
 
 // Creazione tipo di prodotti
